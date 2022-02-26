@@ -2,36 +2,11 @@
   <div class="container">
     <h1>Comentários</h1>
     <hr />
-    <div class="form-todo form-group">
-      <p>
-        <input
-          v-model="name"
-          placeholder="nome"
-          type="text"
-          name="author"
-          class="form-control"
-        />
-      </p>
-      <p>
-        <textarea
-          v-model="message"
-          placeholder="comentário"
-          name="message"
-          class="form-control"
-        >
-        </textarea>
-      </p>
-      <button
-        @click="addComment"
-        @click.right.prevent="rightClick"
-        type="submit"
-        class="btn btn-primary"
-      >
-        Comentar
-      </button>
-    </div>
+    
+    <FormToDo @addComment="add"></FormToDo>
 
     <div class="list-group mt-3">
+      <p v-if="!comments.length">Sem comentários...</p>
       <div class="list-group-item" v-for="(comment, index) in allComments" :key="index">
         <span class="comment__author">
           Author(a): <strong>{{ comment.name }}</strong>
@@ -51,23 +26,21 @@
 </template>
 
 <script>
+import FormToDo from './FormToDo.vue';
+
 export default {
+  components: {
+    FormToDo
+  },
   data() {
     return {
       comments: [],
-      name: "",
-      message: "",
     };
   },
   methods: {
-    addComment() {
-      if (!this.message.trim()) {
-        alert("Preencha o comentário");
-        return;
-      }
-      this.comments.push({ name: this.name, message: this.message });
-      this.name = "";
-      this.message = "";
+    add(comment) {
+      console.log({ comment });
+      this.comments.push(comment);
     },
     removeComment(index) {
       this.comments.splice(index, 1);
@@ -80,7 +53,7 @@ export default {
     allComments() {
       return this.comments.map((comment) => ({
         ...comment,
-        name: comment.name.trim() ? comment.name : "Anônimo",
+        name: comment.author.trim() ? comment.author : "Anônimo",
       }));
     },
   },
